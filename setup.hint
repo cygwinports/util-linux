@@ -1,4 +1,4 @@
 category: System Text Utils
-requires: cygwin e2fsprogs ioperm libintl8 libncurses8 libpcre0 perl
+requires: cygwin e2fsprogs libgetaddrinfo0 libintl8 libncurses8 libpcre0 perl zlib
 sdesc: "Random collection of Linux utilities"
 ldesc: "util-linux is a random collection of Linux utilities."
