@@ -8,17 +8,16 @@ Runtime requirements:
   libgetaddrinfo0-1.6.3-2
   libintl8-0.15-1
   libncurses8-5.5-3
-  libpcre0-7.5-1
+  libpcre0-7.6-1
   zlib-1.2.3-2
   perl
 
 Build requirements:
 (besides corresponding -devel packages)
-  cygwin-1.5.25-7
   autoconf2.5-2.61-1
   automake1.10-1.10-1
   binutils-20060817-1
-  cygport-0.3.7-1
+  cygport-0.3.8-1
   gcc-core-3.4.4-3
   gettext-devel-0.15-1
   make-3.81-1
@@ -58,7 +57,6 @@ Files included in the binary package:
   /usr/bin/getopt.exe
   /usr/bin/hexdump.exe
   /usr/bin/isosize.exe
-  /usr/bin/last.exe
   /usr/bin/line.exe
   /usr/bin/logger.exe
   /usr/bin/look.exe
@@ -129,7 +127,6 @@ Files included in the binary package:
   /usr/share/man/man1/hexdump.1.gz
   /usr/share/man/man1/ipcrm.1.gz
   /usr/share/man/man1/ipcs.1.gz
-  /usr/share/man/man1/last.1.gz
   /usr/share/man/man1/line.1.gz
   /usr/share/man/man1/logger.1.gz
   /usr/share/man/man1/look.1.gz
@@ -158,6 +155,9 @@ Files included in the binary package:
 ------------------
 
 Port Notes:
+
+----- version 2.13.1-2 -----
+Removed last(1) which conflicted with sysvinit.
 
 ----- version 2.13.1-1 -----
 Version bump.

@@ -1,0 +1,46 @@
+ORIG_PN="util-linux-ng"
+
+DESCRIPTION="Random collection of Linux utilities"
+HOMEPAGE="http://kernel.org/~kzak/util-linux-ng/"
+SRC_URI="
+	http://www.kernel.org/pub/linux/utils/${ORIG_PN}/v${PV_MAJ_MIN}/${ORIG_PN}-${PV}.tar.bz2
+	http://www.kernel.org/pub/linux/utils/${ORIG_PN}/v${PV_MAJ_MIN}/${ORIG_PN}-${PV}.tar.bz2.sign
+"
+
+DIFF_EXCLUDES="m4"
+
+CPPFLAGS+=" -D__USE_LINUX_IOCTL_DEFS -I/usr/include/ncurses"
+LDFLAGS+=" -L/usr/lib/e2fsprogs"
+
+# arch provided by coreutils
+# logger provided by inetutils
+# mesg, wall do not work?
+CYGCONF_ARGS="
+  --disable-rpath
+  --disable-makeinstall-chown
+  --disable-schedutils
+  --disable-use-tty-group
+  --disable-wall
+  --disable-write
+  --without-pam
+  ac_cv_lib_blkid_blkid_known_fstype=yes
+"
+
+src_compile() {
+	cd ${S}
+	cygautoreconf
+	cd ${B}
+	cygconf
+	sed -i -e '/HAVE_WIDECHAR/d' config.h
+	cygmake \
+		LIBS="-lintl" \
+		agetty_LDADD="-lgetaddrinfo" \
+		more_LDADD="-lncurses -lpcre"
+}
+
+src_install() {
+	cd ${B}
+	cyginstall \
+		SETARCH_LINKS=  \
+		SETARCH_MAN_LINKS=
+}
