@@ -1,0 +1,83 @@
+--- origsrc/util-linux-ng-2.14.1/login-utils/checktty.c	2008-05-28 18:01:02.000000000 -0500
++++ src/util-linux-ng-2.14.1/login-utils/checktty.c	2009-01-06 20:32:01.360875000 -0600
+@@ -20,6 +20,7 @@
+ #include <sys/stat.h>
+ #include <malloc.h>
+ #include <netdb.h>
++#include <sys/socket.h>
+ #include <sys/syslog.h>
+ #include <ctype.h>
+ #include "nls.h"
+@@ -124,7 +125,7 @@ add_to_class(struct ttyclass *tc, char *
+ static int
+ isapty(const char *tty)
+ {
+-#ifdef __linux__
++#if defined __linux__ || defined __CYGWIN__
+     char devname[100];
+     struct stat stb;
+ 
+@@ -186,6 +187,7 @@ hnmatch_ip4(const char *pat)
+ 	return ((p & mask) == (a & mask));
+ }
+ 
++#ifdef HAVE_GETADDRINFO
+ /* IPv6 -- pattern is [hex:hex:....]/number ([net]/mask) */
+ static int
+ hnmatch_ip6(const char *pat)
+@@ -256,6 +258,7 @@ mismatch:
+ 	free(patnet);
+ 	return 0;
+ }
++#endif
+ 
+ /* match the hostname hn against the pattern pat */
+ static int
+@@ -269,8 +272,10 @@ hnmatch(const char *hn, const char *pat)
+ 
+ 	if (*pat >= '0' && *pat <= '9')
+ 		return hostfamily == AF_INET ? hnmatch_ip4(pat) : 0;
++#ifdef HAVE_GETADDRINFO
+ 	else if (*pat == '[')
+ 		return hostfamily == AF_INET6 ? hnmatch_ip6(pat) : 0;
++#endif
+ 	else {
+ 		/* pattern is a suffix of a FQDN */
+ 		int 	n = strlen(pat),
+@@ -293,7 +298,9 @@ void	badlogin(const char *s) {}	/* dummy
+ int
+ main(int argc, char **argv)
+ {
++#ifdef HAVE_GETADDRINFO
+ 	struct addrinfo hints, *info = NULL;
++#endif
+ 	struct addrexp {
+ 		const char *range;
+ 		const char *ip;
+@@ -309,15 +316,18 @@ main(int argc, char **argv)
+ 		{ NULL, NULL }
+ 	}, *item;
+ 
++#ifdef HAVE_GETADDRINFO
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_UNSPEC;
+ 	hints.ai_flags = AI_NUMERICHOST |  AI_PASSIVE | AI_ADDRCONFIG;
+ 	hints.ai_socktype = SOCK_STREAM;
++#endif
+ 
+ 	for (item = alist; item->range; item++) {
+ 
+ 		printf("hnmatch() on %-30s <-- %-15s: ", item->range, item->ip);
+ 
++#ifdef HAVE_GETADDRINFO
+ 		if (getaddrinfo(item->ip, NULL, &hints, &info)==0 && info) {
+ 			if (info->ai_family == AF_INET)	{
+ 			    struct sockaddr_in *sa =
+@@ -339,6 +349,7 @@ main(int argc, char **argv)
+ 		else
+ 			printf("getaddrinfo() failed\n");
+ 
++#endif
+ 	}
+ 	return 0;
+ }

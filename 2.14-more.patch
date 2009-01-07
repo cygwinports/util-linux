@@ -1,0 +1,86 @@
+--- origsrc/util-linux-ng-2.14.1/text-utils/Makefile.am	2008-05-28 18:01:02.000000000 -0500
++++ src/util-linux-ng-2.14.1/text-utils/Makefile.am	2009-01-06 23:24:11.564000000 -0600
+@@ -9,6 +9,10 @@ hexdump_SOURCES = hexdump.c conv.c displ
+ 
+ dist_man_MANS = col.1 colcrt.1 colrm.1 column.1 hexdump.1 rev.1 line.1 tailf.1
+ 
++if CYGWIN
++REGEX_LIBS = -lpcre
++endif
++
+ if HAVE_NCURSES
+ bin_PROGRAMS = more
+ usrbinexec_PROGRAMS += ul pg
+@@ -17,7 +21,7 @@ more_LDADD = -ltinfo
+ pg_LDADD = -ltinfo @NCURSES_LIBS@
+ ul_LDADD = -ltinfo
+ else
+-more_LDADD = @NCURSES_LIBS@
++more_LDADD = @NCURSES_LIBS@ $(REGEX_LIBS)
+ pg_LDADD = @NCURSES_LIBS@
+ ul_LDADD = @NCURSES_LIBS@
+ endif
+--- origsrc/util-linux-ng-2.14.1/text-utils/more.c	2008-09-10 04:02:43.000000000 -0500
++++ src/util-linux-ng-2.14.1/text-utils/more.c	2009-01-07 01:22:09.454625000 -0600
+@@ -59,9 +59,15 @@
+ #include "nls.h"
+ #include "widechar.h"
+ 
++#ifdef __CYGWIN__
++#include <pcre.h>
++#define OVECCOUNT 30    /* should be a multiple of 3 */
++pcre *re;
++#else
+ #define _REGEX_RE_COMP
+ #include <regex.h>
+ #undef _REGEX_RE_COMP
++#endif
+ 
+ #define VI		"vi"	/* found on the user's path */
+ 
+@@ -547,7 +553,7 @@ magic(f, fs)
+ 	if (fread(twobytes, 2, 1, f) == 1) {
+ 		switch(twobytes[0] + (twobytes[1]<<8)) {
+ 		case OMAGIC:	/* 0407 */
+-		case NMAGIC:	/* 0410 */
++		case 0410:
+ 		case ZMAGIC:	/* 0413 */
+ 		case 0405:
+ 		case 0411:
+@@ -1520,12 +1526,24 @@ void search(char buf[], FILE *file, regi
+     register long line3 = startline;
+     register int lncount;
+     int saveln, rv;
++#ifdef __CYGWIN__
++    const char *s;
++    int erroffset;
++    int ovector[OVECCOUNT];
++#else
+     char *s;
++#endif
+ 
+     context.line = saveln = Currline;
+     context.chrctr = startline;
+     lncount = 0;
++#ifdef __CYGWIN__
++	if (buf)
++	re = pcre_compile(buf, 0, &s, &erroffset, NULL);
++	if (re == NULL)
++#else
+     if ((s = re_comp (buf)) != 0)
++#endif
+ 	error (s);
+     while (!feof (file)) {
+ 	line3 = line2;
+@@ -1533,7 +1551,11 @@ void search(char buf[], FILE *file, regi
+ 	line1 = Ftell (file);
+ 	rdline (file);
+ 	lncount++;
++#ifdef __CYGWIN__
++	if ((rv = pcre_exec (re, NULL, Line, (int)strlen(Line), 0, 0, ovector, OVECCOUNT)) == 1 ) {
++#else
+ 	if ((rv = re_exec (Line)) == 1) {
++#endif
+ 		if (--n == 0) {
+ 		    if (lncount > 3 || (lncount > 1 && no_intty))
+ 		    {

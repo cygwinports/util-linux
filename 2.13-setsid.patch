@@ -1,0 +1,28 @@
+--- origsrc/util-linux-ng-2.13.1/sys-utils/setsid.c	2007-04-25 07:43:38.000000000 -0500
++++ src/util-linux-ng-2.13.1/sys-utils/setsid.c	2008-01-24 23:21:52.984375000 -0600
+@@ -14,6 +14,7 @@
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <stdlib.h>
++#include <fcntl.h>
+ #include "nls.h"
+ 
+ int
+@@ -42,6 +43,17 @@
+ 		perror("setsid"); /* cannot happen */
+ 		exit(1);
+ 	}
++	int fd;
++	if ((fd = open ("/dev/null", O_RDWR, 0)) >= 0) {
++		if (isatty (STDIN_FILENO))
++			dup2 (fd, STDIN_FILENO);
++		if (isatty (STDOUT_FILENO))
++			dup2 (fd, STDOUT_FILENO);
++		if (isatty (STDERR_FILENO))
++			dup2 (fd, STDERR_FILENO);
++		if (fd > 2)
++			close (fd);
++	}
+ 	execvp(argv[1], argv + 1);
+ 	perror("execvp");
+ 	exit(1);

@@ -1,0 +1,88 @@
+--- origsrc/util-linux-ng-2.14.1/configure.ac	2009-01-06 20:35:55.376500000 -0600
++++ src/util-linux-ng-2.14.1/configure.ac	2009-01-06 22:01:20.376500000 -0600
+@@ -28,12 +28,17 @@ AC_PROG_CC_STDC
+ AC_GNU_SOURCE
+ AC_CANONICAL_HOST
+ 
++cygwin_os=no
+ linux_os=no
+ case ${host_os} in
++  *cygwin*)
++    cygwin_os=yes
++    ;;
+   *linux*)
+     linux_os=yes
+     ;;
+ esac
++AM_CONDITIONAL([CYGWIN], test "x$cygwin_os" = xyes)
+ AM_CONDITIONAL([LINUX], test "x$linux_os" = xyes)
+ 
+ AC_PATH_PROG(PERL, perl)
+@@ -161,7 +166,7 @@ elif test "x$with_fsprobe" = xvolume_id;
+   UTIL_CHECK_LIB(volume_id, volume_id_encode_string)
+ fi
+ 
+-if test "x$have_blkid" = xno && test "x$have_volume_id" = xno; then
++if test "x$have_blkid" = xno && test "x$have_volume_id" = xno && test "x$linux_os" = xyes; then
+   AC_MSG_ERROR([blkid or volume_id is needed to build util-linux-ng.])
+ fi
+ 
+@@ -282,7 +288,7 @@ printf(__progname);
+ ])
+ 
+ 
+-AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
++AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+ #include <wchar.h>
+ #include <wctype.h>
+ #include <stdio.h>
+@@ -691,7 +691,7 @@ AC_ARG_VAR([SUID_CFLAGS],
+ AC_ARG_VAR([SUID_LDFLAGS],
+ 	   [LDFLAGS used for binaries which are usually with the suid bit])
+ 
+-LIBS=""
++LIBS="$LIBINTL"
+ 
+ 
+ AC_CONFIG_HEADERS(config.h)
+--- origsrc/util-linux-ng-2.14.1/sys-utils/Makefile.am	2008-09-10 04:02:43.000000000 -0500
++++ src/util-linux-ng-2.14.1/sys-utils/Makefile.am	2009-01-06 21:31:21.064000000 -0600
+@@ -2,11 +2,16 @@ include $(top_srcdir)/config/include-Mak
+ 
+ bin_PROGRAMS =
+ sbin_PROGRAMS =
+-usrbinexec_PROGRAMS = flock ipcrm ipcs renice setsid
+-usrsbinexec_PROGRAMS = ldattach readprofile
++usrbinexec_PROGRAMS = flock renice setsid
++usrsbinexec_PROGRAMS =
+ 
+-dist_man_MANS = flock.1 ipcrm.1 ipcs.1 renice.1 setsid.1 \
+-		ldattach.8 readprofile.1
++dist_man_MANS = flock.1 renice.1 setsid.1
++
++if !CYGWIN
++usrbinexec_PROGRAMS += ipcrm ipcs
++usrsbinexec_PROGRAMS += ldattach readprofile
++dist_man_MANS += ipcrm.1 ipcs.1 ldattach.8 readprofile.1
++endif
+ 
+ if LINUX
+ bin_PROGRAMS += dmesg
+@@ -35,6 +40,8 @@ RDEV_LINKS += ramsize vidmode rootflags
+ dist_man_MANS += rdev.8
+ endif
+ 
++if LINUX
++
+ SETARCH_LINKS = linux32 linux64
+ 
+ if ARCH_S390
+@@ -62,6 +69,8 @@ if ARCH_HPPA
+ SETARCH_LINKS += parisc parisc64 parisc32
+ endif
+ 
++endif
++
+ RDEV_MAN_LINKS = $(RDEV_LINKS:=.8)
+ SETARCH_MAN_LINKS = $(SETARCH_LINKS:=.8)
+ man_MANS = $(RDEV_MAN_LINKS) $(SETARCH_MAN_LINKS)
