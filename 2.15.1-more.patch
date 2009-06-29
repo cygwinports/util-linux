@@ -1,22 +1,11 @@
 --- origsrc/util-linux-ng-2.14.1/text-utils/Makefile.am	2008-05-28 18:01:02.000000000 -0500
 +++ src/util-linux-ng-2.14.1/text-utils/Makefile.am	2009-01-06 23:24:11.564000000 -0600
-@@ -9,6 +9,10 @@ hexdump_SOURCES = hexdump.c conv.c displ
- 
- dist_man_MANS = col.1 colcrt.1 colrm.1 column.1 hexdump.1 rev.1 line.1 tailf.1
- 
-+if CYGWIN
-+REGEX_LIBS = -lpcre
-+endif
-+
- if HAVE_NCURSES
- bin_PROGRAMS = more
- usrbinexec_PROGRAMS += ul pg
-@@ -17,7 +21,7 @@ more_LDADD = -ltinfo
+@@ -17,7 +17,7 @@ more_LDADD = -ltinfo
  pg_LDADD = -ltinfo @NCURSES_LIBS@
  ul_LDADD = -ltinfo
  else
 -more_LDADD = @NCURSES_LIBS@
-+more_LDADD = @NCURSES_LIBS@ $(REGEX_LIBS)
++more_LDADD = @NCURSES_LIBS@ -lpcre
  pg_LDADD = @NCURSES_LIBS@
  ul_LDADD = @NCURSES_LIBS@
  endif
@@ -38,15 +27,6 @@
  
  #define VI		"vi"	/* found on the user's path */
  
-@@ -547,7 +553,7 @@ magic(f, fs)
- 	if (fread(twobytes, 2, 1, f) == 1) {
- 		switch(twobytes[0] + (twobytes[1]<<8)) {
- 		case OMAGIC:	/* 0407 */
--		case NMAGIC:	/* 0410 */
-+		case 0410:
- 		case ZMAGIC:	/* 0413 */
- 		case 0405:
- 		case 0411:
 @@ -1520,12 +1526,24 @@ void search(char buf[], FILE *file, regi
      register long line3 = startline;
      register int lncount;

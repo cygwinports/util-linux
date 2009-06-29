@@ -1,17 +1,16 @@
 --- origsrc/util-linux-ng-2.13.1/misc-utils/script.c	2008-01-16 03:31:41.000000000 -0600
 +++ src/util-linux-ng-2.13.1/misc-utils/script.c	2008-01-24 23:21:52.968750000 -0600
-@@ -63,6 +63,10 @@
+@@ -63,6 +63,9 @@
  #ifdef HAVE_LIBUTIL
  #include <pty.h>
  #endif
 +#ifdef __CYGWIN__
 +#include <utmp.h>
-+void cfmakeraw(struct termios *);
 +#endif
  
  void finish(int);
  void done(void);
-@@ -476,6 +480,22 @@
+@@ -476,6 +480,10 @@
  	(void) tcsetattr(slave, TCSAFLUSH, &tt);
  	(void) ioctl(slave, TIOCSWINSZ, (char *)&win);
  #endif
@@ -21,16 +20,4 @@
  	(void) setsid();
  	(void) ioctl(slave, TIOCSCTTY, 0);
 +#endif
-+}
-+
-+#ifdef __CYGWIN__
-+void cfmakeraw(struct termios *termios_p) {
-+
-+    termios_p->c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL|IXON);
-+    termios_p->c_oflag &= ~OPOST;
-+    termios_p->c_lflag &= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
-+    termios_p->c_cflag &= ~(CSIZE|PARENB);
-+    termios_p->c_cflag |= CS8;
  }
-+#endif
-+

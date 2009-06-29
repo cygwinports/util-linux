@@ -1,0 +1,58 @@
+--- origsrc/util-linux-ng-2.15.1/misc-utils/namei.c	2009-05-27 08:37:52.000000000 -0500
++++ src/util-linux-ng-2.15.1/misc-utils/namei.c	2009-06-28 19:31:38.004861700 -0500
+@@ -403,12 +403,7 @@ print_namei(struct namei *nm, char *path
+ static void
+ usage(int rc)
+ {
+-	const char *p = program_invocation_short_name;
+-
+-	if (!*p)
+-		p = "namei";
+-
+-	printf(_("\nUsage: %s [options] pathname [pathname ...]\n"), p);
++	printf(_("\nUsage: namei [options] pathname [pathname ...]\n"));
+ 	printf(_("\nOptions:\n"));
+ 
+ 	printf(_(
+--- origsrc/util-linux-ng-2.14.1/misc-utils/scriptreplay.c	2008-08-13 12:15:45.000000000 -0500
++++ src/util-linux-ng-2.14.1/misc-utils/scriptreplay.c	2009-01-06 21:07:41.814000000 -0600
+@@ -36,7 +36,7 @@ void __attribute__((__noreturn__))
+ usage(int rc)
+ {
+ 	printf(_("%s <timingfile> [<typescript> [<divisor>]]\n"),
+-			program_invocation_short_name);
++			"scriptreplay");
+ 	exit(rc);
+ }
+ 
+--- origsrc/util-linux-ng-2.15.1/sys-utils/ipcmk.c	2009-03-25 07:19:08.000000000 -0500
++++ src/util-linux-ng-2.15.1/sys-utils/ipcmk.c	2009-06-28 19:33:34.751645600 -0500
+@@ -35,8 +35,6 @@
+ 
+ #include "nls.h"
+ 
+-static const char *progname;
+-
+ key_t createKey(void)
+ {
+ 	srandom( time( NULL ) );
+@@ -81,7 +79,7 @@ int createSem(int nsems, int permission)
+ 
+ void usage(int rc)
+ {
+-	printf(_("\nUsage: %s [options]\n\n"), progname);
++	printf(_("\nUsage: ipcmk [options]\n\n"));
+ 	printf(_(
+ 	"  -M <size>     create shared memory segment of size <size>\n"
+ 	"  -S <nsems>    create semaphore array with <nsems> elements\n"
+@@ -100,10 +98,6 @@ int main(int argc, char **argv)
+ 	int nsems = 0;
+ 	int doShm = 0, doMsg = 0, doSem = 0;
+ 
+-	progname = program_invocation_short_name;
+-	if (!progname)
+-		progname = "ipcmk";
+-
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+ 	textdomain(PACKAGE);

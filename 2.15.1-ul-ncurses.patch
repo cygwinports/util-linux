@@ -1,0 +1,17 @@
+<ncurses/term.h> uses these macros but does not define them.
+They are defined in <ncurses/curses.h>, but we can't #include that
+directly because ul(1) declares filter() with a different signature
+than that in ncurses.
+
+--- origsrc/util-linux-ng-2.15.1/text-utils/ul.c	2009-02-24 09:39:30.000000000 -0600
++++ src/util-linux-ng-2.15.1/text-utils/ul.c	2009-06-28 20:05:37.219030800 -0500
+@@ -40,6 +40,9 @@
+  * 	modified to work correctly in multi-byte locales
+  */
+ 
++#define NCURSES_PUBLIC_VAR(name) ncwrap_##name
++#define NCURSES_WRAPPED_VAR(type,name) extern type NCURSES_PUBLIC_VAR(name)(void)
++
+ #include <stdio.h>
+ #include <unistd.h>		/* for getopt(), isatty() */
+ #include <string.h>		/* for bzero(), strcpy() */

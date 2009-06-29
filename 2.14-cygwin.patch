@@ -18,15 +18,6 @@
  AM_CONDITIONAL([LINUX], test "x$linux_os" = xyes)
  
  AC_PATH_PROG(PERL, perl)
-@@ -161,7 +166,7 @@ elif test "x$with_fsprobe" = xvolume_id;
-   UTIL_CHECK_LIB(volume_id, volume_id_encode_string)
- fi
- 
--if test "x$have_blkid" = xno && test "x$have_volume_id" = xno; then
-+if test "x$have_blkid" = xno && test "x$have_volume_id" = xno && test "x$linux_os" = xyes; then
-   AC_MSG_ERROR([blkid or volume_id is needed to build util-linux-ng.])
- fi
- 
 @@ -282,7 +288,7 @@ printf(__progname);
  ])
  
@@ -52,12 +43,12 @@
  bin_PROGRAMS =
  sbin_PROGRAMS =
 -usrbinexec_PROGRAMS = flock ipcrm ipcs renice setsid
--usrsbinexec_PROGRAMS = ldattach readprofile
+-usrsbinexec_PROGRAMS = readprofile
 +usrbinexec_PROGRAMS = flock renice setsid
 +usrsbinexec_PROGRAMS =
  
 -dist_man_MANS = flock.1 ipcrm.1 ipcs.1 renice.1 setsid.1 \
--		ldattach.8 readprofile.1
+-		readprofile.1
 +dist_man_MANS = flock.1 renice.1 setsid.1
 +
 +if !CYGWIN
