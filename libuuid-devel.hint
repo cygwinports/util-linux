@@ -1,0 +1,5 @@
+category: Libs
+requires: libuuid1
+external-source: util-linux
+sdesc: "Universally Unique ID library (development)"
+ldesc: "util-linux is a random collection of Linux utilities."

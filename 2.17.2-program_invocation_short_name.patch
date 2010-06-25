@@ -1,0 +1,124 @@
+--- origsrc/util-linux-ng-2.17.2/misc-utils/findfs.c	2010-02-04 05:53:56.000000000 -0600
++++ src/util-linux-ng-2.17.2/misc-utils/findfs.c	2010-06-24 04:19:52.872752600 -0500
+@@ -16,7 +16,7 @@
+ 
+ static void __attribute__((__noreturn__)) usage(int rc)
+ {
+-	const char *p = program_invocation_short_name;
++	const char *p = "findfs";
+ 
+ 	if (!p)
+ 		p = "findfs";
+--- origsrc/util-linux-ng-2.17.2/misc-utils/namei.c	2010-06-24 14:46:39.821747100 -0500
++++ src/util-linux-ng-2.17.2/misc-utils/namei.c	2010-06-24 03:49:41.000000000 -0500
+@@ -441,12 +441,7 @@ print_namei(struct namei *nm, char *path
+ static void
+ usage(int rc)
+ {
+-	const char *p = program_invocation_short_name;
+-
+-	if (!*p)
+-		p = "namei";
+-
+-	printf(_("\nUsage: %s [options] pathname [pathname ...]\n"), p);
++	printf(_("\nUsage: namei [options] pathname [pathname ...]\n"));
+ 	printf(_("\nOptions:\n"));
+ 
+ 	printf(_(
+--- origsrc/util-linux-ng-2.17.2/misc-utils/scriptreplay.c	2010-06-24 14:46:39.828747500 -0500
++++ src/util-linux-ng-2.17.2/misc-utils/scriptreplay.c	2010-06-24 03:49:41.000000000 -0500
+@@ -36,7 +36,7 @@ void __attribute__((__noreturn__))
+ usage(int rc)
+ {
+ 	printf(_("%s <timingfile> [<typescript> [<divisor>]]\n"),
+-			program_invocation_short_name);
++			"scriptreplay");
+ 	exit(rc);
+ }
+ 
+--- origsrc/util-linux-ng-2.17.2/misc-utils/wipefs.c	2010-03-22 03:16:23.000000000 -0500
++++ src/util-linux-ng-2.17.2/misc-utils/wipefs.c	2010-06-24 04:20:12.824893800 -0500
+@@ -324,7 +324,7 @@ static void __attribute__((__noreturn__)
+ usage(FILE *out)
+ {
+ 	fprintf(out, _("Usage: %s [options] <device>\n\nOptions:\n"),
+-			program_invocation_short_name);
++			"wipefs");
+ 
+ 	fprintf(out, _(
+ 	" -a, --all           wipe all magic strings (BE CAREFUL!)\n"
+--- origsrc/util-linux-ng-2.17.2/shlibs/blkid/samples/mkfs.c	2010-03-18 17:11:23.000000000 -0500
++++ src/util-linux-ng-2.17.2/shlibs/blkid/samples/mkfs.c	2010-06-24 04:17:58.988238800 -0500
+@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
+ 	if (argc < 2) {
+ 		fprintf(stderr, "usage: %s <device>  "
+ 			"-- checks based on libblkid for mkfs-like programs.\n",
+-			program_invocation_short_name);
++			"mkfs");
+ 		return EXIT_FAILURE;
+ 	}
+ 
+--- origsrc/util-linux-ng-2.17.2/shlibs/blkid/samples/partitions.c	2010-03-18 17:11:23.000000000 -0500
++++ src/util-linux-ng-2.17.2/shlibs/blkid/samples/partitions.c	2010-06-24 04:18:15.117161300 -0500
+@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
+ 	if (argc < 2) {
+ 		fprintf(stderr, "usage: %s <device|file>  "
+ 				"-- prints partitions\n",
+-				program_invocation_short_name);
++				"partitions");
+ 		return EXIT_FAILURE;
+ 	}
+ 
+--- origsrc/util-linux-ng-2.17.2/shlibs/blkid/samples/superblocks.c	2010-03-18 17:11:23.000000000 -0500
++++ src/util-linux-ng-2.17.2/shlibs/blkid/samples/superblocks.c	2010-06-24 04:18:53.350348100 -0500
+@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
+ 	if (argc < 2) {
+ 		fprintf(stderr, "usage: %s <device>  "
+ 				"-- prints superblocks details about the device\n",
+-				program_invocation_short_name);
++				"superblocks");
+ 		return EXIT_FAILURE;
+ 	}
+ 
+--- origsrc/util-linux-ng-2.17.2/shlibs/blkid/samples/topology.c	2010-03-18 17:11:23.000000000 -0500
++++ src/util-linux-ng-2.17.2/shlibs/blkid/samples/topology.c	2010-06-24 04:19:03.078904600 -0500
+@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
+ 	if (argc < 2) {
+ 		fprintf(stderr, "usage: %s <device>  "
+ 				"-- prints topology details about the device\n",
+-				program_invocation_short_name);
++				"topology");
+ 		return EXIT_FAILURE;
+ 	}
+ 
+--- origsrc/util-linux-ng-2.17.2/sys-utils/ipcmk.c	2010-06-24 14:46:39.832747700 -0500
++++ src/util-linux-ng-2.17.2/sys-utils/ipcmk.c	2010-06-24 03:49:41.000000000 -0500
+@@ -35,8 +35,6 @@
+ 
+ #include "nls.h"
+ 
+-static const char *progname;
+-
+ key_t createKey(void)
+ {
+ 	srandom( time( NULL ) );
+@@ -81,7 +79,7 @@ int createSem(int nsems, int permission)
+ 
+ void usage(int rc)
+ {
+-	printf(_("\nUsage: %s [options]\n\n"), progname);
++	printf(_("\nUsage: ipcmk [options]\n\n"));
+ 	printf(_(
+ 	"  -M <size>     create shared memory segment of size <size>\n"
+ 	"  -S <nsems>    create semaphore array with <nsems> elements\n"
+@@ -100,10 +98,6 @@ int main(int argc, char **argv)
+ 	int nsems = 0;
+ 	int doShm = 0, doMsg = 0, doSem = 0;
+ 
+-	progname = program_invocation_short_name;
+-	if (!progname)
+-		progname = "ipcmk";
+-
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+ 	textdomain(PACKAGE);
