@@ -14,7 +14,6 @@ PATCH_URI="
 	2.13-display.patch
 	2.14-fdisk.patch
 	2.17.2-more-regex.patch
-	2.17.2-program_invocation_short_name.patch
 	2.13-script.patch
 	2.13-setsid.patch
 	2.14-login-utils-checktty.patch
