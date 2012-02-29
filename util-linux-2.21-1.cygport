@@ -1,23 +1,15 @@
-ORIG_PN="util-linux-ng"
-
 DESCRIPTION="Random collection of Linux utilities"
-HOMEPAGE="http://kernel.org/~kzak/util-linux-ng/"
-SRC_URI="
-	http://www.kernel.org/pub/linux/utils/${ORIG_PN}/v${PV_MAJ_MIN}/${ORIG_PN}-${PV}.tar.bz2
-	http://www.kernel.org/pub/linux/utils/${ORIG_PN}/v${PV_MAJ_MIN}/${ORIG_PN}-${PV}.tar.bz2.sign
-"
+HOMEPAGE="http://kernel.org/~kzak/util-linux/"
+SRC_URI="ftp://ftp.kernel.org/pub/linux/utils/${PN}/v${PV_MAJ_MIN}/${PN}-${PV}.tar.xz"
 PATCH_URI="
 	2.17.2-no-undefined.patch
 	2.15.1-libintl.patch
-	2.14-agetty.patch
-	2.13-cal-manpage.patch
-	2.13-display.patch
-	2.14-fdisk.patch
+	2.21-agetty.patch
+	2.21-cal.patch
+	2.20.1-fdisk.patch
 	2.17.2-more-regex.patch
-	2.13-script.patch
-	2.13-setsid.patch
-	2.14-login-utils-checktty.patch
-	2.17.2-sys-utils.patch
+	2.21-setsid.patch
+	2.21-sys-utils.patch
 "
 
 PKG_NAMES="${PN} libblkid1 libblkid-devel libuuid1 libuuid-devel"
@@ -29,10 +21,8 @@ libuuid1_CONTENTS="usr/bin/cyguuid-1.dll"
 libuuid_devel_CONTENTS="usr/include/uuid/ usr/lib/libuuid.*
                         usr/lib/pkgconfig/uuid.pc usr/share/man/man3/*uuid*"
 
-CPPFLAGS+=" -D__USE_LINUX_IOCTL_DEFS -D__WORDSIZE=32 -I/usr/include/ncursesw"
+CPPFLAGS+=" -D__USE_LINUX_IOCTL_DEFS -I/usr/include/ncursesw"
 
-# arch: provided by coreutils
-# logger: provided by inetutils
 # wall: provided by sysvinit
 CYGCONF_ARGS="
   --disable-rpath
@@ -40,7 +30,7 @@ CYGCONF_ARGS="
   --disable-schedutils
   --disable-use-tty-group
   --disable-wall
-  --without-pam
 "
 # prevents bogus .so symlinks
 MAKEOPTS+=" libdir=/usr/lib"
+

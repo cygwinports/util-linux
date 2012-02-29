@@ -1,0 +1,11 @@
+--- origsrc/util-linux-2.20.1/fdisk/cfdisk.c	2011-09-26 04:50:22.000000000 -0500
++++ src/util-linux-2.20.1/fdisk/cfdisk.c	2012-01-08 21:12:19.675157200 -0600
+@@ -316,7 +316,7 @@ int num_parts = 0;
+ int logical = 0;
+ long long logical_sectors[MAXIMUM_PARTS];
+ 
+-__sighandler_t old_SIGINT, old_SIGTERM;
++sighandler_t old_SIGINT, old_SIGTERM;
+ 
+ int arrow_cursor = FALSE;
+ int display_units = MEGABYTES;

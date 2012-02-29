@@ -13,7 +13,7 @@
 @@ -106,6 +104,7 @@ void prbuf (register char *s, register i
  void execute (char *filename, char *cmd, ...);
  FILE *checkf (char *, int *);
- int prepare_line_buffer(void);
+ void prepare_line_buffer(void);
 +regex_t re;
  
  #define TBUFSIZ	1024
@@ -30,7 +30,7 @@
      context.chrctr = startline;
      lncount = 0;
 -    if ((s = re_comp (buf)) != 0)
-+    if (strlen(buf) > 0) {
++    if (buf && strlen(buf) > 0) {
 +    if (si = regcomp (&re, buf, REG_NOSUB) != 0) {
 +	regerror (si, &re, s, (size_t)64);
  	error (s);
