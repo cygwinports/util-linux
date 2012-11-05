@@ -1,4 +1,0 @@
-category: System Text Utils
-requires: libblkid1 libgcc1 libintl8 libncursesw10 libuuid1 perl zlib0
-sdesc: "Random collection of Linux utilities"
-ldesc: "util-linux is a random collection of Linux utilities."

@@ -1,5 +1,0 @@
-category: System 
-requires: libgcc1 libuuid1
-external-source: util-linux
-sdesc: "Block device ID library (runtime)"
-ldesc: "util-linux is a random collection of Linux utilities."

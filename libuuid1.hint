@@ -1,5 +1,0 @@
-category: Libs
-requires: libgcc1
-external-source: util-linux
-sdesc: "Universally Unique ID library (runtime)"
-ldesc: "util-linux is a random collection of Linux utilities."
