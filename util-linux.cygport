@@ -1,5 +1,5 @@
 NAME="util-linux"
-VERSION=2.24.2
+VERSION=2.25.1
 RELEASE=1
 CATEGORY="Base"
 SUMMARY="Collection of basic system utilities"
@@ -7,13 +7,16 @@ HOMEPAGE="http://kernel.org/~kzak/util-linux/"
 SRC_URI="ftp://ftp.kernel.org/pub/linux/utils/${NAME}/v${PV_MAJ_MIN}/${NAME}-${VERSION}.tar.xz"
 PATCH_URI="
 	2.24.2-libintl.patch
-	2.24.2-cygwin-include.patch
+	2.25.1-cygwin-include.patch
 	2.24.2-agetty.patch
-	2.24.2-sys-utils.patch
+	2.25.1-ipc-utils.patch
 	2.24.2-libblkid-topology.patch
+	2.25.1-lslogins.patch
+	2.25.1-ncurses-reentrant.patch
+	2.25.1-scanf-ms.patch
 "
 
-PKG_NAMES="${NAME} libblkid1 libblkid-devel libuuid1 libuuid-devel"
+PKG_NAMES="${NAME} libblkid1 libblkid-devel libsmartcols1 libsmartcols-devel libuuid1 libuuid-devel"
 util_linux_CONTENTS="--exclude=*.dll --exclude=man3 usr/bin/ usr/sbin/ usr/share/"
 libblkid1_CATEGORY="Libs"
 libblkid1_SUMMARY="Block device ID library (runtime)"
@@ -22,6 +25,16 @@ libblkid_devel_CATEGORY="Libs"
 libblkid_devel_SUMMARY="Block device ID library (development)"
 libblkid_devel_CONTENTS="usr/include/blkid/ usr/lib/libblkid.*
                          usr/lib/pkgconfig/blkid.pc usr/share/man/man3/*blkid*"
+libsmartcols1_CATEGORY="Libs"
+libsmartcols1_SUMMARY="Tabular data formatting library (runtime)"
+libsmartcols1_DESCRIPTION="The libsmartcols library is used for smart
+adaptive formatting of tabular data."
+libsmartcols1_CONTENTS="usr/bin/cygsmartcols-1.dll"
+libsmartcols_devel_CATEGORY="Libs"
+libsmartcols_devel_SUMMARY="Tabular data formatting library (development)"
+libsmartcols_devel_DESCRIPTION=${libsmartcols1_DESCRIPTION}
+libsmartcols_devel_CONTENTS="usr/include/libsmartcols/ usr/lib/libsmartcols.*
+                        usr/lib/pkgconfig/smartcols.pc"
 libuuid1_CATEGORY="Libs"
 libuuid1_SUMMARY="Universally Unique ID library (runtime)"
 libuuid1_CONTENTS="usr/bin/cyguuid-1.dll"
@@ -33,6 +46,7 @@ libuuid_devel_CONTENTS="usr/include/uuid/ usr/lib/libuuid.*
 CPPFLAGS+=" -D__USE_LINUX_IOCTL_DEFS"
 
 # fsck: e2fsprogs
+# ipcrm, ipcs: ipc-utils
 # kill, mount: cygwin
 # login: login
 # reset: ncurses (synonym of tset)
@@ -45,7 +59,6 @@ CYGCONF_ARGS="
   --disable-libmount
   --disable-mount
   --disable-losetup
-  --disable-cytune
   --disable-fsck
   --disable-partx
   --enable-uuidd
@@ -63,9 +76,12 @@ CYGCONF_ARGS="
   --disable-wdctl
   --disable-switch_root
   --disable-pivot_root
+  --disable-ipcrm
+  --disable-ipcs
   --disable-tunelp
   --disable-kill
   --disable-last
+  --disable-lslogins
   --disable-utmpdump
   --disable-line
   --disable-mesg
@@ -87,7 +103,6 @@ CYGCONF_ARGS="
   --disable-schedutils
   --disable-wall
   --disable-write
-  --disable-socket-activation
   --disable-use-tty-group
   --disable-makeinstall-chown
   --disable-makeinstall-setuid
