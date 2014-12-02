@@ -1,18 +1,18 @@
 NAME="util-linux"
-VERSION=2.25.1
+VERSION=2.25.2
 RELEASE=1
 CATEGORY="Base"
 SUMMARY="Collection of basic system utilities"
 HOMEPAGE="http://kernel.org/~kzak/util-linux/"
 SRC_URI="ftp://ftp.kernel.org/pub/linux/utils/${NAME}/v${PV_MAJ_MIN}/${NAME}-${VERSION}.tar.xz"
 PATCH_URI="
+	http://pkgs.fedoraproject.org/cgit/util-linux.git/plain/2.26-libblkid-escape.patch
 	2.24.2-libintl.patch
 	2.25.1-cygwin-include.patch
 	2.24.2-agetty.patch
 	2.25.1-ipc-utils.patch
 	2.24.2-libblkid-topology.patch
 	2.25.1-lslogins.patch
-	2.25.1-ncurses-reentrant.patch
 	2.25.1-scanf-ms.patch
 "
 
