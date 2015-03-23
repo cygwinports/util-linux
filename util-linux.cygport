@@ -1,6 +1,6 @@
 NAME="util-linux"
 VERSION=2.25.2
-RELEASE=1
+RELEASE=2
 CATEGORY="Base"
 SUMMARY="Collection of basic system utilities"
 HOMEPAGE="http://kernel.org/~kzak/util-linux/"
@@ -17,7 +17,7 @@ PATCH_URI="
 "
 
 PKG_NAMES="${NAME} libblkid1 libblkid-devel libsmartcols1 libsmartcols-devel libuuid1 libuuid-devel"
-util_linux_CONTENTS="--exclude=*.dll --exclude=man3 usr/bin/ usr/sbin/ usr/share/"
+util_linux_CONTENTS="--exclude=*.dll --exclude=man3 bin/ sbin/ usr/bin/ usr/sbin/ usr/share/"
 libblkid1_CATEGORY="Libs"
 libblkid1_SUMMARY="Block device ID library (runtime)"
 libblkid1_CONTENTS="usr/bin/cygblkid-1.dll"
@@ -92,7 +92,7 @@ CYGCONF_ARGS="
   --disable-newgrp
   --disable-chfn-chsh
   --disable-login
-  --disable-nologin
+  --enable-nologin
   --disable-sulogin
   --disable-su
   --disable-runuser
@@ -106,7 +106,6 @@ CYGCONF_ARGS="
   --disable-use-tty-group
   --disable-makeinstall-chown
   --disable-makeinstall-setuid
-  ac_cv_func___fpending=yes
   SOLIB_LDFLAGS=-no-undefined
 "
 
