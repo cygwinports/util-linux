@@ -1,30 +1,51 @@
 NAME="util-linux"
-VERSION=2.25.2
-RELEASE=2
+VERSION=2.32.1
+RELEASE=1
 CATEGORY="Base"
 SUMMARY="Collection of basic system utilities"
-HOMEPAGE="http://kernel.org/~kzak/util-linux/"
-SRC_URI="ftp://ftp.kernel.org/pub/linux/utils/${NAME}/v${PV_MAJ_MIN}/${NAME}-${VERSION}.tar.xz"
+HOMEPAGE="https://github.com/karelzak/util-linux/"
+SRC_URI="https://mirrors.edge.kernel.org/pub/linux/utils/${NAME}/v${PV_MAJ_MIN}/${NAME}-${VERSION}.tar.xz"
 PATCH_URI="
-	http://pkgs.fedoraproject.org/cgit/util-linux.git/plain/2.26-libblkid-escape.patch
 	2.24.2-libintl.patch
 	2.25.1-cygwin-include.patch
 	2.24.2-agetty.patch
-	2.25.1-ipc-utils.patch
 	2.24.2-libblkid-topology.patch
-	2.25.1-lslogins.patch
-	2.25.1-scanf-ms.patch
+	2.32.1-testsuite.patch
 "
 
-PKG_NAMES="${NAME} libblkid1 libblkid-devel libsmartcols1 libsmartcols-devel libuuid1 libuuid-devel"
-util_linux_CONTENTS="--exclude=*.dll --exclude=man3 bin/ sbin/ usr/bin/ usr/sbin/ usr/share/"
+PKG_NAMES="${NAME} libblkid1 libblkid-devel libfdisk1 libfdisk-devel
+	   libsmartcols1 libsmartcols-devel libuuid1 libuuid-devel" # uuidd
+util_linux_CONTENTS="
+	--exclude=*.dll --exclude=uuidd*
+	bin/*
+	sbin/*
+	usr/bin/*
+	usr/share/bash-completion/
+	usr/share/doc/${NAME}
+	usr/share/locale/*/*/util-linux.mo
+	usr/share/man/man[158]/*
+"
 libblkid1_CATEGORY="Libs"
 libblkid1_SUMMARY="Block device ID library (runtime)"
 libblkid1_CONTENTS="usr/bin/cygblkid-1.dll"
 libblkid_devel_CATEGORY="Libs"
 libblkid_devel_SUMMARY="Block device ID library (development)"
-libblkid_devel_CONTENTS="usr/include/blkid/ usr/lib/libblkid.*
-                         usr/lib/pkgconfig/blkid.pc usr/share/man/man3/*blkid*"
+libblkid_devel_CONTENTS="
+	usr/include/blkid/
+	usr/lib/libblkid.*
+	usr/lib/pkgconfig/blkid.pc
+	usr/share/man/man3/*blkid*
+"
+libfdisk1_CATEGORY="Libs"
+libfdisk1_SUMMARY="Disk partition table manipulation library (runtime)"
+libfdisk1_CONTENTS="usr/bin/cygfdisk-1.dll"
+libfdisk_devel_CATEGORY="Libs"
+libfdisk_devel_SUMMARY="Disk partition table manipulation library (development)"
+libfdisk_devel_CONTENTS="
+	usr/include/libfdisk/
+	usr/lib/libfdisk.*
+	usr/lib/pkgconfig/fdisk.pc
+"
 libsmartcols1_CATEGORY="Libs"
 libsmartcols1_SUMMARY="Tabular data formatting library (runtime)"
 libsmartcols1_DESCRIPTION="The libsmartcols library is used for smart
@@ -33,15 +54,41 @@ libsmartcols1_CONTENTS="usr/bin/cygsmartcols-1.dll"
 libsmartcols_devel_CATEGORY="Libs"
 libsmartcols_devel_SUMMARY="Tabular data formatting library (development)"
 libsmartcols_devel_DESCRIPTION=${libsmartcols1_DESCRIPTION}
-libsmartcols_devel_CONTENTS="usr/include/libsmartcols/ usr/lib/libsmartcols.*
-                        usr/lib/pkgconfig/smartcols.pc"
+libsmartcols_devel_CONTENTS="
+	usr/include/libsmartcols/
+	usr/lib/libsmartcols.*
+	usr/lib/pkgconfig/smartcols.pc
+"
 libuuid1_CATEGORY="Libs"
 libuuid1_SUMMARY="Universally Unique ID library (runtime)"
 libuuid1_CONTENTS="usr/bin/cyguuid-1.dll"
 libuuid_devel_CATEGORY="Libs"
 libuuid_devel_SUMMARY="Universally Unique ID library (development)"
-libuuid_devel_CONTENTS="usr/include/uuid/ usr/lib/libuuid.*
-                        usr/lib/pkgconfig/uuid.pc usr/share/man/man3/*uuid*"
+libuuid_devel_CONTENTS="
+	usr/include/uuid/
+	usr/lib/libuuid.*
+	usr/lib/pkgconfig/uuid.pc
+	usr/share/man/man3/*uuid*
+"
+# once signalfd(2) is available
+uuidd_CATEGORY="System"
+uuidd_SUMMARY="UUID daemon"
+uuidd_CONTENTS="
+	usr/sbin/uuidd.exe
+	usr/share/bash-completion/completions/uuidd
+	usr/share/man/man8/uuidd.8*
+	var/lib/libuuid/
+	var/run/uuidd/
+"
+
+BUILD_REQUIRES="
+	bison
+	gettext-devel
+	libcrypt-devel
+	libncurses-devel
+	libreadline-devel
+	zlib-devel
+"
 
 CPPFLAGS+=" -D__USE_LINUX_IOCTL_DEFS"
 
@@ -49,19 +96,22 @@ CPPFLAGS+=" -D__USE_LINUX_IOCTL_DEFS"
 # ipcrm, ipcs: ipc-utils
 # kill, mount: cygwin
 # login: login
-# reset: ncurses (synonym of tset)
 # su: coreutils
 # last, mesg, mountpoint, utmpdump, wall: sysvinit
+# uuidd: missing <sys/signalfd.h>
 # others are linux-specific or obsolete
 CYGCONF_ARGS="
+  --runstatedir=/var/run
   --enable-libuuid
+  --enable-libuuid-force-uuidd
   --enable-libblkid
+  --enable-libfdisk
   --disable-libmount
   --disable-mount
   --disable-losetup
   --disable-fsck
   --disable-partx
-  --enable-uuidd
+  --disable-uuidd
   --disable-mountpoint
   --disable-fallocate
   --disable-unshare
@@ -87,7 +137,6 @@ CYGCONF_ARGS="
   --disable-mesg
   --disable-raw
   --enable-rename
-  --disable-reset
   --disable-vipw
   --disable-newgrp
   --disable-chfn-chsh
@@ -109,7 +158,7 @@ CYGCONF_ARGS="
   SOLIB_LDFLAGS=-no-undefined
 "
 
-
 # prevents bogus .so symlinks
 MAKEOPTS+=" libdir=/usr/lib"
 
+#KEEPDIRS="/var/lib/libuuid /var/run/uuidd"
