@@ -1,5 +1,5 @@
 NAME="util-linux"
-VERSION=2.32.1
+VERSION=2.33.1
 RELEASE=1
 CATEGORY="Base"
 SUMMARY="Collection of basic system utilities"
@@ -14,7 +14,7 @@ PATCH_URI="
 "
 
 PKG_NAMES="${NAME} libblkid1 libblkid-devel libfdisk1 libfdisk-devel
-	   libsmartcols1 libsmartcols-devel libuuid1 libuuid-devel" # uuidd
+	   libsmartcols1 libsmartcols-devel libuuid1 libuuid-devel uuidd"
 util_linux_CONTENTS="
 	--exclude=*.dll --exclude=uuidd*
 	bin/*
@@ -70,7 +70,6 @@ libuuid_devel_CONTENTS="
 	usr/lib/pkgconfig/uuid.pc
 	usr/share/man/man3/*uuid*
 "
-# once signalfd(2) is available
 uuidd_CATEGORY="System"
 uuidd_SUMMARY="UUID daemon"
 uuidd_CONTENTS="
@@ -98,7 +97,6 @@ CPPFLAGS+=" -D__USE_LINUX_IOCTL_DEFS"
 # login: login
 # su: coreutils
 # last, mesg, mountpoint, utmpdump, wall: sysvinit
-# uuidd: missing <sys/signalfd.h>
 # others are linux-specific or obsolete
 CYGCONF_ARGS="
   --runstatedir=/var/run
@@ -111,7 +109,7 @@ CYGCONF_ARGS="
   --disable-losetup
   --disable-fsck
   --disable-partx
-  --disable-uuidd
+  --enable-uuidd
   --disable-mountpoint
   --disable-fallocate
   --disable-unshare
@@ -161,4 +159,4 @@ CYGCONF_ARGS="
 # prevents bogus .so symlinks
 MAKEOPTS+=" libdir=/usr/lib"
 
-#KEEPDIRS="/var/lib/libuuid /var/run/uuidd"
+KEEPDIRS="/var/lib/libuuid /var/run/uuidd"
